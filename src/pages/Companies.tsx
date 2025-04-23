@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/table";
 import { Plus, FileDown, Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { mockCompanies } from "@/data/mockData";
 import { Badge } from "@/components/ui/badge";
+import { useCompanies } from "@/hooks/useCompanies";
+import { Spinner } from "@/components/ui/spinner";
 
 const statusColors: Record<string, string> = {
   active: "bg-green-100 text-green-800",
@@ -29,6 +30,18 @@ const statusColors: Record<string, string> = {
 };
 
 const Companies = () => {
+  const { companies, isLoading, error } = useCompanies();
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="rounded-lg bg-red-50 p-4 text-red-800">
+          Error loading companies: {error.message}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -49,7 +62,7 @@ const Companies = () => {
             <div>
               <CardTitle>All Companies</CardTitle>
               <CardDescription>
-                Showing {mockCompanies.length} companies
+                Showing {companies?.length || 0} companies
               </CardDescription>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -71,45 +84,51 @@ const Companies = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="table-container">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Industry</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Revenue Tier</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mockCompanies.map((company) => (
-                  <TableRow key={company.id} className="cursor-pointer">
-                    <TableCell className="font-medium">{company.name}</TableCell>
-                    <TableCell className="capitalize">
-                      {company.company_type || "N/A"}
-                    </TableCell>
-                    <TableCell>{company.industry || "N/A"}</TableCell>
-                    <TableCell>
-                      {company.status && (
-                        <Badge
-                          variant="outline"
-                          className={statusColors[company.status]}
-                        >
-                          {company.status}
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="capitalize">
-                      {company.revenue_tier
-                        ? company.revenue_tier.replace("-", " ")
-                        : "N/A"}
-                    </TableCell>
+          {isLoading ? (
+            <div className="flex justify-center py-8">
+              <Spinner size="lg" />
+            </div>
+          ) : (
+            <div className="table-container">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Industry</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Revenue Tier</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {companies?.map((company) => (
+                    <TableRow key={company.id} className="cursor-pointer">
+                      <TableCell className="font-medium">{company.name}</TableCell>
+                      <TableCell className="capitalize">
+                        {company.company_type || "N/A"}
+                      </TableCell>
+                      <TableCell>{company.industry || "N/A"}</TableCell>
+                      <TableCell>
+                        {company.status && (
+                          <Badge
+                            variant="outline"
+                            className={statusColors[company.status]}
+                          >
+                            {company.status}
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {company.revenue_tier
+                          ? company.revenue_tier.replace("-", " ")
+                          : "N/A"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
