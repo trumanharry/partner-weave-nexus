@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,7 +35,7 @@ export const useAuth = () => {
   return context;
 };
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -107,6 +106,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 // Refetch the updated profile
                 const updatedProfile = await fetchUserProfile(session.user.id);
                 setProfile(updatedProfile);
+              } else {
+                setProfile(profile);
               }
             } else {
               setProfile(profile);
