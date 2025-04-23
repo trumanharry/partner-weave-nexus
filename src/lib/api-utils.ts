@@ -1,5 +1,10 @@
-
 import type { LinkedRecord, Comment, Rating, Notification } from '@/types';
+import { 
+  mockLinkedRecords, 
+  mockComments, 
+  mockRatings, 
+  mockNotifications 
+} from '@/data/mockInteractions';
 
 export const fetchRelatedRecords = async (
   recordId: string,
