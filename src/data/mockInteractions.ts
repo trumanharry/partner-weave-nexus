@@ -55,7 +55,6 @@ export const mockLinkedRecords: LinkedRecord[] = [
     updated_at: "2023-04-05T14:20:00Z",
     created_by: mockUsers[3].id,
     last_modified_by: mockUsers[3].id,
-    // Example of an inactive relationship
     status: "inactive"
   }
 ];

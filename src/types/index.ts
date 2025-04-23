@@ -120,7 +120,7 @@ export interface Physician extends BaseRecord {
 export interface Comment extends BaseRecord {
   content: string;
   record_id: string;
-  record_type: 'company' | 'hospital' | 'user' | 'contact' | 'physician';
+  record_type: 'company' | 'hospital' | 'user' | 'contact' | 'physician' | 'comment';
   user_id: string;
   parent_id?: string;
   upvotes: number;
@@ -145,7 +145,7 @@ export interface Notification extends BaseRecord {
   action_url?: string;
   type: 'comment' | 'rating' | 'update' | 'mention' | 'system';
   record_id?: string;
-  record_type?: 'company' | 'hospital' | 'user' | 'contact' | 'physician';
+  record_type?: 'company' | 'hospital' | 'user' | 'contact' | 'physician' | 'comment';
 }
 
 // Linked Record type
@@ -156,6 +156,7 @@ export interface LinkedRecord extends BaseRecord {
   target_type: 'company' | 'hospital' | 'user' | 'contact' | 'physician';
   relationship_type?: string;
   notes?: string;
+  status?: 'active' | 'inactive';
 }
 
 // User Profile
