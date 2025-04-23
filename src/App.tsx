@@ -1,9 +1,9 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import MainLayout from "./components/layout/MainLayout";
+import LandingPage from "./pages/LandingPage";
 import Auth from "./pages/Auth";
 
 // Import pages
@@ -27,11 +27,12 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/auth/pending" element={<PendingAccount />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <PrivateRoute>
                 <MainLayout>
@@ -40,8 +41,7 @@ function App() {
               </PrivateRoute>
             }
           >
-            <Route index element={<Index />} />
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route index element={<Dashboard />} />
             <Route path="companies" element={<Companies />} />
             <Route path="hospitals" element={<Hospitals />} />
             <Route path="physicians" element={<Physicians />} />
