@@ -11,7 +11,7 @@ import {
   Stethoscope,
   LayoutDashboard,
   Settings,
-  FileImport,
+  FileUp,
   FileBarChart,
 } from "lucide-react";
 
@@ -81,7 +81,7 @@ const Sidebar: React.FC = () => {
     },
     {
       label: "Import",
-      icon: <FileImport className="w-5 h-5" />,
+      icon: <FileUp className="w-5 h-5" />,
       href: "/import",
     },
     {

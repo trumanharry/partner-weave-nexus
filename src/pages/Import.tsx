@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Card,
@@ -20,7 +19,7 @@ const Import = () => {
         <p className="text-gray-500">Upload and import data from CSV files</p>
       </div>
 
-      <Alert variant="info">
+      <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Import Guidance</AlertTitle>
         <AlertDescription>
@@ -65,7 +64,6 @@ const Import = () => {
           </Card>
         </TabsContent>
         
-        {/* The other tabs would have similar content */}
         <TabsContent value="hospitals">
           <Card>
             <CardHeader>
@@ -93,7 +91,6 @@ const Import = () => {
           </Card>
         </TabsContent>
         
-        {/* Placeholder for the other tabs */}
         <TabsContent value="contacts">
           <Card>
             <CardHeader>
