@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,11 +16,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, FileDown, Filter, Search } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Plus, FileDown, Filter, Search, Pencil, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useCompanies } from "@/hooks/useCompanies";
 import { Spinner } from "@/components/ui/spinner";
+import CompanyForm from "@/components/companies/CompanyForm";
+import type { Company } from "@/types";
 
 const statusColors: Record<string, string> = {
   active: "bg-green-100 text-green-800",
@@ -30,7 +49,29 @@ const statusColors: Record<string, string> = {
 };
 
 const Companies = () => {
-  const { companies, isLoading, error } = useCompanies();
+  const { companies, isLoading, error, createCompany, updateCompany, deleteCompany } = useCompanies();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingCompany, setEditingCompany] = useState<Company | null>(null);
+  const [deletingCompany, setDeletingCompany] = useState<Company | null>(null);
+
+  const handleCreateCompany = async (data: Partial<Company>) => {
+    await createCompany.mutateAsync(data);
+    setIsCreateDialogOpen(false);
+  };
+
+  const handleUpdateCompany = async (data: Partial<Company>) => {
+    if (editingCompany) {
+      await updateCompany.mutateAsync({ ...data, id: editingCompany.id });
+      setEditingCompany(null);
+    }
+  };
+
+  const handleDeleteCompany = async () => {
+    if (deletingCompany) {
+      await deleteCompany.mutateAsync(deletingCompany.id);
+      setDeletingCompany(null);
+    }
+  };
 
   if (error) {
     return (
@@ -51,7 +92,7 @@ const Companies = () => {
             Manage corporate and distributor companies
           </p>
         </div>
-        <Button className="w-full sm:w-auto">
+        <Button onClick={() => setIsCreateDialogOpen(true)} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" /> Add Company
         </Button>
       </div>
@@ -98,11 +139,12 @@ const Companies = () => {
                     <TableHead>Industry</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Revenue Tier</TableHead>
+                    <TableHead className="w-[100px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {companies?.map((company) => (
-                    <TableRow key={company.id} className="cursor-pointer">
+                    <TableRow key={company.id}>
                       <TableCell className="font-medium">{company.name}</TableCell>
                       <TableCell className="capitalize">
                         {company.company_type || "N/A"}
@@ -123,6 +165,24 @@ const Companies = () => {
                           ? company.revenue_tier.replace("-", " ")
                           : "N/A"}
                       </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingCompany(company)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeletingCompany(company)}
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -131,6 +191,62 @@ const Companies = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Create Company Dialog */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Create New Company</DialogTitle>
+            <DialogDescription>
+              Add a new company to your ecosystem
+            </DialogDescription>
+          </DialogHeader>
+          <CompanyForm
+            onSubmit={handleCreateCompany}
+            onCancel={() => setIsCreateDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Company Dialog */}
+      <Dialog open={!!editingCompany} onOpenChange={() => setEditingCompany(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Edit Company</DialogTitle>
+            <DialogDescription>
+              Update company information
+            </DialogDescription>
+          </DialogHeader>
+          {editingCompany && (
+            <CompanyForm
+              company={editingCompany}
+              onSubmit={handleUpdateCompany}
+              onCancel={() => setEditingCompany(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Company Dialog */}
+      <AlertDialog open={!!deletingCompany} onOpenChange={() => setDeletingCompany(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the company
+              {deletingCompany?.name ? ` "${deletingCompany.name}"` : ""} and all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeletingCompany(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteCompany}>
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
