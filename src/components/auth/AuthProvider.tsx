@@ -65,6 +65,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    // Check if this is the first user
+    const checkFirstUser = async () => {
+      const { count, error } = await supabase
+        .from('user_profiles')
+        .select('*', { count: 'exact' });
+      
+      if (error) {
+        console.error("Error checking first user:", error);
+        return false;
+      }
+      
+      return count === 1; // First user (includes the initial signup)
+    };
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_, session) => {
@@ -75,7 +89,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Use setTimeout to avoid potential deadlock with Supabase auth
           setTimeout(async () => {
             const profile = await fetchUserProfile(session.user.id);
-            setProfile(profile);
+            
+            // If this is the first user, automatically set to active
+            if (profile?.status === 'pending') {
+              const isFirstUser = await checkFirstUser();
+              
+              if (isFirstUser) {
+                const { error } = await supabase
+                  .from('user_profiles')
+                  .update({ status: 'active' })
+                  .eq('user_id', session.user.id);
+                
+                if (error) {
+                  console.error("Error updating first user status:", error);
+                }
+                
+                // Refetch the updated profile
+                const updatedProfile = await fetchUserProfile(session.user.id);
+                setProfile(updatedProfile);
+              }
+            } else {
+              setProfile(profile);
+            }
+            
             setLoading(false);
           }, 0);
         } else {
