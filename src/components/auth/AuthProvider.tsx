@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -53,12 +54,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (error) {
         console.error("Error fetching user profile:", error);
+        toast({ title: "Error", description: "Could not fetch user profile", variant: "destructive" });
         return null;
       }
       
       return data as UserProfile;
     } catch (error) {
       console.error("Exception fetching user profile:", error);
+      toast({ title: "Error", description: "An unexpected error occurred", variant: "destructive" });
       return null;
     }
   };
@@ -80,7 +83,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_, session) => {
+      async (event, session) => {
+        console.log("Auth state change:", event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -124,6 +128,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Check for existing session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log("Initial session check:", session?.user?.email || "No session");
       setSession(session);
       setUser(session?.user ?? null);
       
@@ -132,6 +137,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setProfile(profile);
       }
       
+      setLoading(false);
+    }).catch(error => {
+      console.error("Error getting session:", error);
       setLoading(false);
     });
 
@@ -143,4 +151,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-}
+};

@@ -143,48 +143,56 @@ const Companies = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {companies?.map((company) => (
-                    <TableRow key={company.id}>
-                      <TableCell className="font-medium">{company.name}</TableCell>
-                      <TableCell className="capitalize">
-                        {company.company_type || "N/A"}
-                      </TableCell>
-                      <TableCell>{company.industry || "N/A"}</TableCell>
-                      <TableCell>
-                        {company.status && (
-                          <Badge
-                            variant="outline"
-                            className={statusColors[company.status]}
-                          >
-                            {company.status}
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="capitalize">
-                        {company.revenue_tier
-                          ? company.revenue_tier.replace("-", " ")
-                          : "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setEditingCompany(company)}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setDeletingCompany(company)}
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
-                        </div>
+                  {companies && companies.length > 0 ? (
+                    companies.map((company) => (
+                      <TableRow key={company.id}>
+                        <TableCell className="font-medium">{company.name}</TableCell>
+                        <TableCell className="capitalize">
+                          {company.company_type || "N/A"}
+                        </TableCell>
+                        <TableCell>{company.industry || "N/A"}</TableCell>
+                        <TableCell>
+                          {company.status && (
+                            <Badge
+                              variant="outline"
+                              className={statusColors[company.status] || ""}
+                            >
+                              {company.status}
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="capitalize">
+                          {company.revenue_tier
+                            ? company.revenue_tier.replace("-", " ")
+                            : "N/A"}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setEditingCompany(company)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setDeletingCompany(company)}
+                            >
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                        No companies found. Click "Add Company" to create one.
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </div>

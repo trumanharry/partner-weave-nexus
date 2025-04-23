@@ -52,47 +52,47 @@ const Sidebar: React.FC = () => {
     {
       label: "Dashboard",
       icon: <LayoutDashboard className="w-5 h-5" />,
-      href: "/",
+      href: "/dashboard",
     },
     {
       label: "Companies",
       icon: <Building2 className="w-5 h-5" />,
-      href: "/companies",
+      href: "/dashboard/companies",
     },
     {
       label: "Hospitals",
       icon: <Hospital className="w-5 h-5" />,
-      href: "/hospitals",
+      href: "/dashboard/hospitals",
     },
     {
       label: "Users",
       icon: <Users className="w-5 h-5" />,
-      href: "/users",
+      href: "/dashboard/users",
     },
     {
       label: "Contacts",
       icon: <UserRound className="w-5 h-5" />,
-      href: "/contacts",
+      href: "/dashboard/contacts",
     },
     {
       label: "Physicians",
       icon: <Stethoscope className="w-5 h-5" />,
-      href: "/physicians",
+      href: "/dashboard/physicians",
     },
     {
       label: "Import",
       icon: <FileUp className="w-5 h-5" />,
-      href: "/import",
+      href: "/dashboard/import",
     },
     {
       label: "Reports",
       icon: <FileBarChart className="w-5 h-5" />,
-      href: "/reports",
+      href: "/dashboard/reports",
     },
     {
       label: "Settings",
       icon: <Settings className="w-5 h-5" />,
-      href: "/settings",
+      href: "/dashboard/settings",
     },
   ];
 
