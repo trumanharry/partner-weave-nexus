@@ -1,4 +1,3 @@
-
 import type { Rating, Comment, Notification, UserProfile, LinkedRecord } from '@/types';
 
 export const calculateAverageRating = (ratings: Rating[]): number => {
@@ -19,7 +18,14 @@ export const getThreadedComments = (comments: Comment[]): Comment[] => {
     return acc;
   }, {} as Record<string, Comment[]>);
   
-  return topLevelComments;
+  const addReplies = (comment: Comment) => {
+    const replies = commentsByParentId[comment.id] || [];
+    comment.replies = replies;
+    replies.forEach(reply => addReplies(reply));
+    return comment;
+  };
+
+  return topLevelComments.map(comment => addReplies({...comment}));
 };
 
 export const calculateUserPoints = (
@@ -27,10 +33,6 @@ export const calculateUserPoints = (
   comments: Comment[],
   ratings: Rating[]
 ): number => {
-  // Points calculation rules:
-  // - 10 points per rating
-  // - 5 points per comment
-  // - 2 points per upvote received
   const commentPoints = comments.length * 5;
   const ratingPoints = ratings.length * 10;
   const upvotePoints = comments.reduce((acc, comment) => acc + comment.upvotes * 2, 0);
@@ -43,12 +45,10 @@ export const formatNotification = (notification: Notification): string => {
   return `${notification.title} - ${notification.content} (${timeAgo})`;
 };
 
-// New relationship management helpers
 export const getRelationshipType = (
   sourceType: string,
   targetType: string
 ): string[] => {
-  // Return possible relationship types based on entity types
   const relationshipMap: Record<string, Record<string, string[]>> = {
     company: {
       hospital: ['supplier', 'distributor', 'partner', 'research_partner'],
@@ -100,7 +100,6 @@ export const findCommonRelationships = (
     let relatedId: string | null = null;
     let relatedType: string | null = null;
     
-    // Find the other entity in the relationship
     if (record.source_id === entityId) {
       relatedId = record.target_id;
       relatedType = record.target_type;
@@ -109,7 +108,6 @@ export const findCommonRelationships = (
       relatedType = record.source_type;
     }
     
-    // If this entity is part of the relationship, count it
     if (relatedId && relatedType) {
       const key = `${relatedType}-${relatedId}`;
       if (relatedEntities.has(key)) {
@@ -121,7 +119,6 @@ export const findCommonRelationships = (
     }
   });
   
-  // Convert map to array and sort by count
   return Array.from(relatedEntities.entries())
     .map(([key, value]) => ({
       entityId: key.split('-')[1],
@@ -131,7 +128,6 @@ export const findCommonRelationships = (
     .sort((a, b) => b.relationshipCount - a.relationshipCount);
 };
 
-// Advanced notification utils
 export const createNotificationContent = (
   type: 'comment' | 'rating' | 'update' | 'mention' | 'system',
   actorName: string,
@@ -155,7 +151,6 @@ export const createNotificationContent = (
   }
 };
 
-// Data validation 
 export const validateRating = (value: number): boolean => {
   return value >= 1 && value <= 5;
 };

@@ -1,4 +1,3 @@
-
 // Common fields all records will have
 export interface BaseRecord {
   id: string;
@@ -125,6 +124,7 @@ export interface Comment extends BaseRecord {
   parent_id?: string;
   upvotes: number;
   downvotes: number;
+  replies?: Comment[]; // Add this property to support threaded comments
 }
 
 // Rating record
