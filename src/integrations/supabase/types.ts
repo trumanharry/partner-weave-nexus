@@ -500,7 +500,7 @@ export type Database = {
           phone: string | null
           points: number | null
           preferences: Json | null
-          role: Database["public"]["Enums"]["user_role"]
+          role: string
           status: Database["public"]["Enums"]["user_status"]
           title: string | null
           updated_at: string | null
@@ -521,7 +521,7 @@ export type Database = {
           phone?: string | null
           points?: number | null
           preferences?: Json | null
-          role: Database["public"]["Enums"]["user_role"]
+          role: string
           status?: Database["public"]["Enums"]["user_status"]
           title?: string | null
           updated_at?: string | null
@@ -542,7 +542,7 @@ export type Database = {
           phone?: string | null
           points?: number | null
           preferences?: Json | null
-          role?: Database["public"]["Enums"]["user_role"]
+          role?: string
           status?: Database["public"]["Enums"]["user_status"]
           title?: string | null
           updated_at?: string | null

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { AuthProvider } from "./components/auth/AuthProvider";
@@ -18,6 +19,8 @@ import Import from "./pages/Import";
 import Settings from "./pages/Settings";
 import Testing from "./pages/Testing";
 import NotFound from "./pages/NotFound";
+import Unauthorized from "./pages/Unauthorized";
+import PendingAccount from "./pages/PendingAccount";
 
 function App() {
   return (
@@ -25,6 +28,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/auth" element={<Auth />} />
+          <Route path="/auth/pending" element={<PendingAccount />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
           <Route
             path="/"
             element={
@@ -41,7 +46,14 @@ function App() {
             <Route path="hospitals" element={<Hospitals />} />
             <Route path="physicians" element={<Physicians />} />
             <Route path="contacts" element={<Contacts />} />
-            <Route path="users" element={<Users />} />
+            <Route 
+              path="users" 
+              element={
+                <PrivateRoute requireAdmin={true}>
+                  <Users />
+                </PrivateRoute>
+              } 
+            />
             <Route path="reports" element={<Reports />} />
             <Route path="import" element={<Import />} />
             <Route path="settings" element={<Settings />} />
