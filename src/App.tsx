@@ -1,7 +1,9 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
+import { AuthProvider } from "./components/auth/AuthProvider";
+import PrivateRoute from "./components/auth/PrivateRoute";
 import MainLayout from "./components/layout/MainLayout";
+import Auth from "./pages/Auth";
 
 // Import pages
 import Index from "./pages/Index";
@@ -19,24 +21,36 @@ import NotFound from "./pages/NotFound";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainLayout>{<Outlet />}</MainLayout>}>
-          <Route index element={<Index />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="companies" element={<Companies />} />
-          <Route path="hospitals" element={<Hospitals />} />
-          <Route path="physicians" element={<Physicians />} />
-          <Route path="contacts" element={<Contacts />} />
-          <Route path="users" element={<Users />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="import" element={<Import />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="testing" element={<Testing />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <MainLayout>
+                  <Outlet />
+                </MainLayout>
+              </PrivateRoute>
+            }
+          >
+            <Route index element={<Index />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="companies" element={<Companies />} />
+            <Route path="hospitals" element={<Hospitals />} />
+            <Route path="physicians" element={<Physicians />} />
+            <Route path="contacts" element={<Contacts />} />
+            <Route path="users" element={<Users />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="import" element={<Import />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="testing" element={<Testing />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
