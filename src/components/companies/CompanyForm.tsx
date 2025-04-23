@@ -23,15 +23,20 @@ import { Button } from "@/components/ui/button";
 import { Constants } from "@/integrations/supabase/types";
 import type { Company } from "@/types";
 
+// Cast the readonly arrays to the expected type
+const companyTypes = Constants.public.Enums.company_type as unknown as [string, ...string[]];
+const revenueTiers = Constants.public.Enums.revenue_tier as unknown as [string, ...string[]]; 
+const companyStatuses = Constants.public.Enums.company_status as unknown as [string, ...string[]];
+
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
   industry: z.string().optional(),
-  company_type: z.enum(Constants.public.Enums.company_type as [string, ...string[]]).optional(),
-  revenue_tier: z.enum(Constants.public.Enums.revenue_tier as [string, ...string[]]).optional(),
+  company_type: z.enum(companyTypes).optional(),
+  revenue_tier: z.enum(revenueTiers).optional(),
   website: z.string().url().optional().or(z.literal("")),
   email: z.string().email().optional().or(z.literal("")),
   phone: z.string().optional(),
-  status: z.enum(Constants.public.Enums.company_status as [string, ...string[]]).optional(),
+  status: z.enum(companyStatuses).optional(),
 });
 
 type CompanyFormValues = z.infer<typeof companySchema>;

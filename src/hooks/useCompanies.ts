@@ -22,9 +22,23 @@ export const useCompanies = () => {
 
   const createCompany = useMutation({
     mutationFn: async (newCompany: Partial<Company>) => {
+      // Ensure name is provided (required by the database schema)
+      if (!newCompany.name) {
+        throw new Error("Company name is required");
+      }
+      
       const { data, error } = await supabase
         .from("companies")
-        .insert(newCompany)
+        .insert({
+          name: newCompany.name,
+          industry: newCompany.industry,
+          company_type: newCompany.company_type,
+          revenue_tier: newCompany.revenue_tier,
+          website: newCompany.website,
+          email: newCompany.email,
+          phone: newCompany.phone,
+          status: newCompany.status,
+        })
         .select()
         .single();
 
